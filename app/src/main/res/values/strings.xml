@@ -1,0 +1,68 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">My Application</string>
+
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="label_data">Data:</string>
+    <string name="label_device_address">Device address:</string>
+    <string name="label_state">State:</string>
+    <string name="no_data">No data</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="title_devices">BLE Device Scan</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
+
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Fullname</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="btn_link_to_register">Not a member? Sign up now.</string>
+    <string name="btn_link_to_login">Already registred! Login Me.</string>
+    <string name="welcome">Welcome</string>
+    <string name="btn_logout">LOGOUT</string>
+    <string name="name">Fullname</string>
+
+    <string name="speak" />
+
+    <string name="btSpeak">Speak</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_voice_recognition">Voice Recognition</string>
+    <string name="tvTextMatches">Text Matches</string>
+    <string name="sNoOfMatches">No of Matches</string>
+    <string name="etSearchHint">Speech hint here</string>
+    <string-array name="saNoOfMatches">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+    <string name="title_activity_maps">Map</string>
+    <string name="left_lab" />
+    <string name="bottom_left_lab" />
+    <string name="bottom_lab" />
+    <string name="right_bottom_lab" />
+    <string name="right_lab" />
+    <string name="left_front_lab" />
+    <string name="center_lab" />
+    <string name="front_lab" />
+    <string name="front_right_lab" />
+</resources>
