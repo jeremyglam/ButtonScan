@@ -1,116 +1,225 @@
+
 package com.example.myapplication;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.content.Intent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainActivity  extends BlunoLibrary {
-	private Button buttonScan;
-	private Button buttonSerialSend;
-	private EditText serialSendText;
-	private TextView serialReceivedText;
+//import com.example.BLE.R;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+	private BluetoothAdapter mBluetoothAdapter;
+	private static final int REQUEST_ENABLE_BT = 1;
+	private static final long SCAN_PERIOD = 8000;//8s
+	private Dialog mDialog;
+	public static List<BluetoothDevice> mDevices = new ArrayList<BluetoothDevice>();
+	public static MainActivity instance = null;
+	//SearchDevicesView search_device_view;
+	Timer mTimer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-        onCreateProcess();														//onCreate Process by BlunoLibrary
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setContentView(R.layout.main);
+		//search_device_view = (SearchDevicesView) findViewById(R.id.search_device_view);
+		//search_device_view.setWillNotDraw(false);
+		//mTimer = new Timer();
+		
+		if (!getPackageManager().hasSystemFeature(
+				PackageManager.FEATURE_BLUETOOTH_LE)) {
+			Toast.makeText(this, "Ble not supported", Toast.LENGTH_SHORT)
+					.show();
+			finish();
+		}
 
+		final BluetoothManager mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+		mBluetoothAdapter = mBluetoothManager.getAdapter();
+		if (mBluetoothAdapter == null) {
+			Toast.makeText(this, "Ble not supported", Toast.LENGTH_SHORT)
+					.show();
+			finish();
+			return;
+		}
 
-        serialBegin(115200);													//set the Uart Baudrate on BLE chip to 115200
+		if (!mBluetoothAdapter.isEnabled()) {
+			Intent enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		}
+		
+		 
+		
+//		search_device_view.setOnTouchListener(new OnTouchListener(){
+//
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				// TODO Auto-generated method stub
+//
+//				if(search_device_view.getValidTouchEvent(event)){
+//					Log.d(null, "==== lawliet test onTouch======");
+//					if(event.getAction() == MotionEvent.ACTION_DOWN){
+//						if(search_device_view.isSearching()){
+//							if(mTimer != null){
+//								Log.d(null, "====cancel scan ====");
+//								mTimer.cancel();
+//							}
+//						}else{
+//							scanLeDevice();
+//							mTimer = new Timer();
+//							mTimer.schedule(new TimerTask() {
+//								@Override
+//								public void run() {
+//									Intent deviceListIntent = new Intent(getApplicationContext(),Device.class);
+//									startActivity(deviceListIntent);
+//									if(search_device_view.isSearching()){
+//										search_device_view.setSearching(false);
+//									}
+//								}
+//							}, SCAN_PERIOD);
+//						}
+//					}
+//				}
+//				return false;
+//			}
+//		});
+//
+		
+		
+		
 
-//        serialReceivedText=(TextView) findViewById(R.id.serialReveicedText);	//initial the EditText of the received data
-//        serialSendText=(EditText) findViewById(R.id.serialSendText);			//initial the EditText of the sending data
-
-        buttonSerialSend = (Button) findViewById(R.id.but_send);		//initial the button for sending the data
-        buttonSerialSend.setOnClickListener(new OnClickListener() {
-
+		Button btn = (Button)findViewById(R.id.but_scan);
+		btn.setOnClickListener(new View.OnClickListener() {
+			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				scanLeDevice();
 
-				serialSend(serialSendText.getText().toString());				//send the data to the BLUNO
+				showRoundProcessDialog(MainActivity.this, R.layout.loading_process_dialog_anim);
+
+				Timer mTimer = new Timer();
+				mTimer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						Intent deviceListIntent = new Intent(getApplicationContext(),
+								Device.class);
+						startActivity(deviceListIntent);
+						mDialog.dismiss();
+					}
+				}, SCAN_PERIOD);
 			}
 		});
 
-        buttonScan = (Button) findViewById(R.id.but_scan);					//initial the button for scanning the BLE device
-        buttonScan.setOnClickListener(new OnClickListener() {
+//		scanLeDevice();
+//
+//		showRoundProcessDialog(MainActivity.this, R.layout.loading_process_dialog_anim);
+
+		Timer mTimer = new Timer();
+		mTimer.schedule(new TimerTask() {
 
 			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-				buttonScanOnClickProcess();										//Alert Dialog for selecting the BLE device
+			public void run() {
+				Intent deviceListIntent = new Intent(getApplicationContext(),
+						Device.class);
+				startActivity(deviceListIntent);
+				//mDialog.dismiss();
 			}
-		});
+		}, SCAN_PERIOD);
+
+		instance = this;
 	}
 
-	protected void onResume(){
-		super.onResume();
-		System.out.println("BlUNOActivity onResume");
-		onResumeProcess();														//onResume Process by BlunoLibrary
+	public void showRoundProcessDialog(Context mContext, int layout) {
+		OnKeyListener keyListener = new OnKeyListener() {
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode,
+					KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_HOME
+						|| keyCode == KeyEvent.KEYCODE_SEARCH) {
+					return true;
+				}
+				return false;
+			}
+		};
+
+		mDialog = new AlertDialog.Builder(mContext).create();
+		mDialog.setOnKeyListener(keyListener);
+		mDialog.show();
+
+		mDialog.setContentView(layout);
 	}
-	
-	
-	
+
+	private void scanLeDevice() {
+		new Thread() {
+
+			@Override
+			public void run() {
+				mBluetoothAdapter.startLeScan(mLeScanCallback);
+
+				try {
+					Thread.sleep(SCAN_PERIOD);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				mBluetoothAdapter.stopLeScan(mLeScanCallback);
+			}
+		}.start();
+	}
+
+	private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+
+		@Override
+		public void onLeScan(final BluetoothDevice device, final int rssi,
+				byte[] scanRecord) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (device != null) {
+						if (mDevices.indexOf(device) == -1)
+							mDevices.add(device);
+					}
+				}
+			});
+		}
+	};
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		onActivityResultProcess(requestCode, resultCode, data);					//onActivityResult Process by BlunoLibrary
+		// User chose not to enable Bluetooth.
+		if (requestCode == REQUEST_ENABLE_BT
+				&& resultCode == Activity.RESULT_CANCELED) {
+			//finish();
+			return;
+		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
-    @Override
-    protected void onPause() {
-        super.onPause();
-        onPauseProcess();														//onPause Process by BlunoLibrary
-    }
-	
-	protected void onStop() {
-		super.onStop();
-		onStopProcess();														//onStop Process by BlunoLibrary
-	}
-    
-	@Override
-    protected void onDestroy() {
-        super.onDestroy();	
-        onDestroyProcess();														//onDestroy Process by BlunoLibrary
-    }
 
 	@Override
-	public void onConectionStateChange(connectionStateEnum theConnectionState) {//Once connection state changes, this function will be called
-		switch (theConnectionState) {											//Four connection state
-		case isConnected:
-			buttonScan.setText("Connected");
-			break;
-		case isConnecting:
-			buttonScan.setText("Connecting");
-			break;
-		case isToScan:
-			buttonScan.setText("Scan");
-			break;
-		case isScanning:
-			buttonScan.setText("Scanning");
-			break;
-		case isDisconnecting:
-			buttonScan.setText("isDisconnecting");
-			break;
-		default:
-			break;
-		}
-	}
+	protected void onDestroy() {
+		super.onDestroy();
 
-	@Override
-	public void onSerialReceived(String theString) {							//Once connection data received, this function will be called
-		// TODO Auto-generated method stub
-		serialReceivedText.append(theString);							//append the text into the EditText
-		//The Serial data from the BLUNO may be sub-packaged, so using a buffer to hold the String is a good choice.
-		((ScrollView)serialReceivedText.getParent()).fullScroll(View.FOCUS_DOWN);
+		//System.exit(0);
 	}
-
 }
