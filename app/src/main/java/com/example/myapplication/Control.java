@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import java.io.OptionalDataException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -22,6 +23,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.util.Xml;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,7 +57,7 @@ public class Control extends Activity {
 
 	Button but_send1;
 	TextView tv_deviceName,tv_deviceAddr,tv_connstatus,tv_currentRSSI,tv_targetUUID,tv_rx;
-	EditText et_send;
+	EditText et_duration,et_white,et_yellow;
 	ExpandableListView lv;
 
 
@@ -74,7 +76,9 @@ public class Control extends Activity {
 		tv_targetUUID = (TextView) findViewById(R.id.tv_UUID);
 		tv_targetUUID.setText("null");
 		tv_rx = (TextView) findViewById(R.id.TV_RX);
-		et_send = (EditText) findViewById(R.id.ET_TX1);
+		et_duration = (EditText) findViewById(R.id.ET_TX1);
+		et_white = (EditText) findViewById(R.id.ET_TX3);
+		et_yellow = (EditText) findViewById(R.id.ET_TX4);
 		lv=(ExpandableListView)this.findViewById(R.id.ELV1);
 		lv.setOnChildClickListener(servicesListClickListner);
 		
@@ -102,9 +106,12 @@ public class Control extends Activity {
 		but_send1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(target_character != null) {String cmd = et_send.getText().toString();
-				Log.d(TAG, "send cmd:" + cmd);
-				if (cmd != null) {
+				if(target_character != null) {
+					String cmd_duration = et_duration.getText().toString();
+					String cmd_white = et_white.getText().toString();
+					String cmd_yellow = et_yellow.getText().toString();
+					Log.d(TAG, "send cmd:" + cmd_duration);
+					if (cmd_duration != null) {
 
 						byte b = 0x00;
 						byte c = 0x59;
@@ -113,9 +120,9 @@ public class Control extends Activity {
 						byte f = 0x00;
 						byte g = (byte) 0xFF;
 						byte h = (byte) 0xFF;
-						byte[] tmp = cmd.getBytes();
+						byte[] tmp = cmd_duration.getBytes();
 						byte[] tx = new byte[tmp.length];
-				//		byte[] tx = new byte[tmp.length + 1];
+//								byte[] tx = new byte[tmp.length + 1];
 						tx[0] = b;
 						tx[1] = c;
 						tx[2] = d;
@@ -123,41 +130,40 @@ public class Control extends Activity {
 						tx[4] = f;
 						tx[5] = g;
 						tx[6] = h;
-				//		for (int i = 1; i < tmp.length + 1; i++) {
-				//			tx[i] = tmp[i - 1];
+						//		for (int i = 1; i < tmp.length + 1; i++) {
+						//			tx[i] = tmp[i - 1];
 
-				//		}
-				//		for (int i = 0; i < tmp.length + 1; i++) {
-				//			tx[i] = tmp[i - 1];
+						//		}
+						//		for (int i = 0; i < tmp.length + 1; i++) {
+						//			tx[i] = tmp[i - 1];
 
-				//		}
+						//		}
 
 
 
 						target_character.setValue(tx);
-				//		Log.i(TAG, "data " + cmd);
+						//		Log.i(TAG, "data " + cmd);
 
-				//		target_character.setValue(cmd);
+						//		target_character.setValue(cmd);
 
 
 						mBluetoothLeService.writeCharacteristic(target_character);
-						et_send.setText(cmd);
-						et_send.setText("0000F001-0000-1000-8000-00805F9B34FB");
-					Toast.makeText(Control.this, "S " + target_character, Toast.LENGTH_SHORT).show();
-					Log.d(DB, (cmd));
-					Log.d(TAG, "sent cmd:" + cmd + " "  + Arrays.toString(tmp) + " " + Arrays.toString(tx));
+						et_duration.setText(cmd_duration);
+//						et_send.setText("0000F001-0000-1000-8000-00805F9B34FB");
+						Toast.makeText(Control.this, "S " + target_character, Toast.LENGTH_SHORT).show();
+						Log.d(DB, (cmd_duration));
+						Log.d(TAG, "sent cmd:" + cmd_duration + " "  + Arrays.toString(tmp) + " " + Arrays.toString(tx));
 
 					} else {
 						Toast.makeText(Control.this, "Please type your command.", Toast.LENGTH_SHORT).show();
-						Log.d(DB, String.valueOf(cmd));
+						Log.d(DB, String.valueOf(cmd_duration));
 					}
-					}else{
-						Toast.makeText(Control.this, "Please select a UUID." + characteristicTXRX, Toast.LENGTH_SHORT).show();
-						et_send.setText("0000F001-0000-1000-8000-00805F9B34FB");
-						Log.d(DB, String.valueOf(characteristicTXRX));
+				}else{
+					Toast.makeText(Control.this, "Please select a UUID." + characteristicTXRX, Toast.LENGTH_SHORT).show();
 
-					}
-				et_send.setText(null);
+					Log.d(DB, String.valueOf(characteristicTXRX));
+
+				}
 			}
 
 		});

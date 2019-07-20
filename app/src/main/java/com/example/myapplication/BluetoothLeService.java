@@ -140,7 +140,7 @@ public class BluetoothLeService extends Service{
 		}
 		sendBroadcast(intent);
     }
-    
+
     public class LocalBinder extends Binder {
         BluetoothLeService getService() {
             return BluetoothLeService.this;
