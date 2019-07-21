@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -39,7 +40,7 @@ public class Control extends Activity {
 	private static final String DB = "debug";
 	private static String targetchar =  "0000F001-0000-1000-8000-00805F9B34FB";
 	private final static String UUID_KEY_DATA = "0000F001-0000-1000-8000-00805F9B34FB";
-	private BluetoothGattCharacteristic characteristicTXRX = null;
+//	private BluetoothGattCharacteristic characteristicTXRX = null;
 	public static final String EXTRAS_DEVICE = "EXTRAS_DEVICE";
     private String mDeviceName = null;
     private String mDeviceAddress = null;
@@ -60,6 +61,7 @@ public class Control extends Activity {
 	EditText et_duration,et_white,et_yellow;
 	ExpandableListView lv;
 
+	String hex_Whitevalue;
 
 
 	@Override
@@ -107,9 +109,16 @@ public class Control extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(target_character != null) {
-					String cmd_duration = et_duration.getText().toString();
-					String cmd_white = et_white.getText().toString();
-					String cmd_yellow = et_yellow.getText().toString();
+					String cmd_duration = "0x"+ et_duration.getText().toString();
+//					int cmd_white = Integer.parseInt(et_white.getText().toString());
+					String cmd_white = "0x"+et_white.getText().toString();
+					Log.d(TAG, "before cmd" + cmd_white);
+//					hex_Whitevalue = Integer.toHexString(cmd_white);
+					Log.d(TAG, "after cmd:" + hex_Whitevalue);
+					byte [] i = cmd_white.getBytes();
+					//String wled= "0x"+hex_Whitevalue;
+					Log.d(TAG, "after cmd2:" + Arrays.toString(i));
+					String cmd_yellow = "0x"+et_yellow.getText().toString();
 					Log.d(TAG, "send cmd:" + cmd_duration);
 					if (cmd_duration != null) {
 
@@ -119,6 +128,8 @@ public class Control extends Activity {
 						byte e = 0x03;
 						byte f = 0x00;
 						byte g = (byte) 0xFF;
+//						byte g = Byte.parseByte(wled);
+						Log.d(TAG, "after cmd3:" + g);
 						byte h = (byte) 0xFF;
 						byte[] tmp = cmd_duration.getBytes();
 						byte[] tx = new byte[tmp.length];
@@ -145,10 +156,10 @@ public class Control extends Activity {
 						//		Log.i(TAG, "data " + cmd);
 
 						//		target_character.setValue(cmd);
-
+						Log.d(TAG, "send cmd2:" + cmd_duration);
 
 						mBluetoothLeService.writeCharacteristic(target_character);
-						et_duration.setText(cmd_duration);
+						//et_duration.setText(cmd_duration);
 //						et_send.setText("0000F001-0000-1000-8000-00805F9B34FB");
 						Toast.makeText(Control.this, "S " + target_character, Toast.LENGTH_SHORT).show();
 						Log.d(DB, (cmd_duration));
@@ -159,14 +170,18 @@ public class Control extends Activity {
 						Log.d(DB, String.valueOf(cmd_duration));
 					}
 				}else{
-					Toast.makeText(Control.this, "Please select a UUID." + characteristicTXRX, Toast.LENGTH_SHORT).show();
+					Toast.makeText(Control.this, "Please select a UUID." + targetchar, Toast.LENGTH_SHORT).show();
 
-					Log.d(DB, String.valueOf(characteristicTXRX));
+					Log.d(DB, String.valueOf(targetchar));
 
 				}
 			}
 
 		});
+
+	}
+
+
 
 
 		/* btn_write.setOnClickListener(new OnClickListener() {
@@ -214,7 +229,7 @@ public class Control extends Activity {
 			}
 
 		}); */
-	}
+
 
 
 	private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -440,6 +455,7 @@ public class Control extends Activity {
 				 mBluetoothLeService.readCharacteristic(gattCharacteristic);
 				 // System.out.println("--GattCharacteristic value2:"+gattCharacteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)); 
 				 BluetoothGattDescriptor Descriptor=gattCharacteristic.getDescriptor(gattCharacteristic.getUuid());
+
 				 //System.out.println("--GattCharacteristic Descriptor:"+Descriptor.toString());
                 
 				 List<BluetoothGattDescriptor> descriptors= gattCharacteristic.getDescriptors();
@@ -476,14 +492,14 @@ public class Control extends Activity {
                             mGattCharacteristics.get(groupPosition).get(childPosition);
                     
                     target_character = characteristic;
+
                     tv_targetUUID.setText(characteristic.getUuid().toString());
                     
                     final int charaProp = characteristic.getProperties();
                     if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
                         // If there is an active notification on a characteristic, clear
                         // it first so it doesn't update the data field on the user interface.
-                        if (mNotifyCharacteristic != null) {
-                            mBluetoothLeService.setCharacteristicNotification(
+                        if (mNotifyCharacteristic != null) { mBluetoothLeService.setCharacteristicNotification(
                                     mNotifyCharacteristic, false);
                             mNotifyCharacteristic = null;
                         }
