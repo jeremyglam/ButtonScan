@@ -43,6 +43,7 @@ public class Control extends Activity {
 //	private BluetoothGattCharacteristic characteristicTXRX = null;
 	public static final String EXTRAS_DEVICE = "EXTRAS_DEVICE";
     private String mDeviceName = null;
+    public String s;
     private String mDeviceAddress = null;
 //	private String mDeviceUuid = "0000F001-0000-1000-8000-00805F9B34FB";
 	private String mDeviceUuid = null;
@@ -104,22 +105,29 @@ public class Control extends Activity {
 		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
 		bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
+
 		but_send1 = (Button) findViewById(R.id.but_send);
 		but_send1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(target_character != null) {
-					String cmd_duration = "0x"+ et_duration.getText().toString();
+
+                    String cmd_duration = "0x"+ et_duration.getText().toString();
 //					int cmd_white = Integer.parseInt(et_white.getText().toString());
-					String cmd_white = "0x"+et_white.getText().toString();
-					Log.d(TAG, "before cmd" + cmd_white);
-//					hex_Whitevalue = Integer.toHexString(cmd_white);
-					Log.d(TAG, "after cmd:" + hex_Whitevalue);
-					byte [] i = cmd_white.getBytes();
+//                    String s = et_white.getText().toString();
+//					int cmd_white2 = Integer.parseInt("0x")+cmd_white;
+//					hexStringToByteArray(String.valueOf(et_white));
+//					String cmd_white = et_white.getText().toString();
+//					Log.d(TAG, "before cmd" + array;
+//                    Log.d(TAG, "before cmd cmdwhite2" + cmd_white2);
+					//hex_Whitevalue = Integer.toHexString(cmd_white);
+//					Log.d(TAG, "after cmd:" + hex_Whitevalue);
+//					byte i = (byte)cmd_white2;
 					//String wled= "0x"+hex_Whitevalue;
-					Log.d(TAG, "after cmd2:" + Arrays.toString(i));
+//					Log.d(TAG, "after cmd2:" + i);
 					String cmd_yellow = "0x"+et_yellow.getText().toString();
 					Log.d(TAG, "send cmd:" + cmd_duration);
+
 					if (cmd_duration != null) {
 
 						byte b = 0x00;
@@ -141,15 +149,17 @@ public class Control extends Activity {
 						tx[4] = f;
 						tx[5] = g;
 						tx[6] = h;
+						String str1 = new String(tx);
+						Log.d(TAG, "send cmd3:" + str1);
 						//		for (int i = 1; i < tmp.length + 1; i++) {
 						//			tx[i] = tmp[i - 1];
-
 						//		}
 						//		for (int i = 0; i < tmp.length + 1; i++) {
 						//			tx[i] = tmp[i - 1];
-
 						//		}
-
+						byte[] ARRAY2= hexStringToByteArray(String.valueOf(et_white));
+						Log.d(TAG,"ARRAY2 CMD"+ Arrays.toString(ARRAY2));
+//                        Log.d(TAG,"ARRAY CMD"+ Arrays.toString(hexStringToByteArray(String.valueOf(et_white))));
 
 
 						target_character.setValue(tx);
@@ -182,7 +192,14 @@ public class Control extends Activity {
 	}
 
 
-
+	public static byte[] hexStringToByteArray(String s) {
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
+		}
+		return data;
+	}
 
 		/* btn_write.setOnClickListener(new OnClickListener() {
 			@Override
@@ -207,14 +224,7 @@ public class Control extends Activity {
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
-
-
-
-
 						Toast.makeText(Control.this, "A" + target_character, Toast.LENGTH_SHORT).show();
-
-
-
 					} else {
 						Toast.makeText(Control.this, "Please type your command.", Toast.LENGTH_SHORT).show();
 						Log.d(DB, String.valueOf(cmd));
