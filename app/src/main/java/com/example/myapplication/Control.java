@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import android.app.ActionBar;
@@ -28,6 +29,7 @@ import android.util.Xml;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -38,9 +40,7 @@ import android.widget.Toast;
 public class Control extends Activity {
 	private final static String TAG = Control.class.getSimpleName();
 	private static final String DB = "debug";
-	private static String targetchar =  "0000F001-0000-1000-8000-00805F9B34FB";
 	private final static String UUID_KEY_DATA = "0000F001-0000-1000-8000-00805F9B34FB";
-//	private BluetoothGattCharacteristic characteristicTXRX = null;
 	public static final String EXTRAS_DEVICE = "EXTRAS_DEVICE";
     private String mDeviceName = null;
     public String s;
@@ -56,6 +56,7 @@ public class Control extends Activity {
 	private BluetoothGattCharacteristic target_character = null;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+
 
 	Button but_send1;
 	TextView tv_deviceName,tv_deviceAddr,tv_connstatus,tv_currentRSSI,tv_targetUUID,tv_rx;
@@ -111,78 +112,62 @@ public class Control extends Activity {
 			@Override
 			public void onClick(View v) {
 				if(target_character != null) {
-
-                    String cmd_duration = "0x"+ et_duration.getText().toString();
-//					int cmd_white = Integer.parseInt(et_white.getText().toString());
-//                    String s = et_white.getText().toString();
-//					int cmd_white2 = Integer.parseInt("0x")+cmd_white;
-//					hexStringToByteArray(String.valueOf(et_white));
-//					String cmd_white = et_white.getText().toString();
-//					Log.d(TAG, "before cmd" + array;
-//                    Log.d(TAG, "before cmd cmdwhite2" + cmd_white2);
-					//hex_Whitevalue = Integer.toHexString(cmd_white);
-//					Log.d(TAG, "after cmd:" + hex_Whitevalue);
-//					byte i = (byte)cmd_white2;
-					//String wled= "0x"+hex_Whitevalue;
-//					Log.d(TAG, "after cmd2:" + i);
-					String cmd_yellow = "0x"+et_yellow.getText().toString();
-					Log.d(TAG, "send cmd:" + cmd_duration);
-
-					if (cmd_duration != null) {
-
-						byte b = 0x00;
-						byte c = 0x59;
-						byte d = 0x03;
-						byte e = 0x03;
-						byte f = 0x00;
-						byte g = (byte) 0xFF;
-//						byte g = Byte.parseByte(wled);
-						Log.d(TAG, "after cmd3:" + g);
-						byte h = (byte) 0xFF;
-						byte[] tmp = cmd_duration.getBytes();
-						byte[] tx = new byte[tmp.length];
-//								byte[] tx = new byte[tmp.length + 1];
-						tx[0] = b;
-						tx[1] = c;
-						tx[2] = d;
-						tx[3] = e;
-						tx[4] = f;
-						tx[5] = g;
-						tx[6] = h;
-						String str1 = new String(tx);
-						Log.d(TAG, "send cmd3:" + str1);
-						//		for (int i = 1; i < tmp.length + 1; i++) {
-						//			tx[i] = tmp[i - 1];
-						//		}
-						//		for (int i = 0; i < tmp.length + 1; i++) {
-						//			tx[i] = tmp[i - 1];
-						//		}
-						byte[] ARRAY2= hexStringToByteArray(String.valueOf(et_white));
-						Log.d(TAG,"ARRAY2 CMD"+ Arrays.toString(ARRAY2));
-//                        Log.d(TAG,"ARRAY CMD"+ Arrays.toString(hexStringToByteArray(String.valueOf(et_white))));
+					Log.d(TAG, "cmd start");
 
 
-						target_character.setValue(tx);
-						//		Log.i(TAG, "data " + cmd);
+					String cmd_duration = et_duration.getText().toString();
+					String cmd_white = et_white.getText().toString();
+					String cmd_yellow = et_yellow.getText().toString();
 
-						//		target_character.setValue(cmd);
-						Log.d(TAG, "send cmd2:" + cmd_duration);
+
+
+
+					if (!cmd_duration.isEmpty() && !cmd_white.isEmpty() && !cmd_yellow.isEmpty()) {
+
+
+						int int_Duration = Integer.parseInt(et_duration.getText().toString());
+						String hex_Duration = Integer.toHexString(int_Duration);
+						String hex_Duration2 = ("00" + hex_Duration).substring(hex_Duration.length());
+
+
+						Log.d(TAG, "before cmd: hex_duration" + hex_Duration + " hexDuration2: " + hex_Duration2);
+
+
+						int int_White = Integer.parseInt(et_white.getText().toString());
+						String hex_white = Integer.toHexString(int_White);
+						String hex_white2 = ("00" + hex_white).substring(hex_white.length());
+						Log.d(TAG, "before cmd: hex_white" + hex_white + " hexWhite2: "+ hex_white2);
+
+						int int_Yellow = Integer.parseInt(et_yellow.getText().toString());
+						String hex_Yellow = Integer.toHexString(int_Yellow);
+						String hex_Yellow2 = ("00" + hex_Yellow).substring(hex_Yellow.length());
+						Log.d(TAG, "before cmd: hex_yellow" + hex_Yellow + " hexYellow2: "+ hex_Yellow2);
+
+
+						String hexarray = "005903" +  hex_Duration2 + "00" + hex_white2 + hex_Yellow2;
+						Log.d(TAG, "before cmd hexarray " + hexarray);
+
+						byte [] dataarray = hexStringToByteArray(hexarray);
+						Log.d(TAG, "after cmd data array " + Arrays.toString(dataarray));
+
+
+
+						target_character.setValue(dataarray);
+
 
 						mBluetoothLeService.writeCharacteristic(target_character);
-						//et_duration.setText(cmd_duration);
-//						et_send.setText("0000F001-0000-1000-8000-00805F9B34FB");
+
 						Toast.makeText(Control.this, "S " + target_character, Toast.LENGTH_SHORT).show();
 						Log.d(DB, (cmd_duration));
-						Log.d(TAG, "sent cmd:" + cmd_duration + " "  + Arrays.toString(tmp) + " " + Arrays.toString(tx));
 
+						Log.d(TAG, "sent cmd:" + "array sent data array "  + Arrays.toString(dataarray));
 					} else {
-						Toast.makeText(Control.this, "Please type your command.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(Control.this, "Please type your command. No empty fields allowed.", Toast.LENGTH_SHORT).show();
 						Log.d(DB, String.valueOf(cmd_duration));
 					}
 				}else{
-					Toast.makeText(Control.this, "Please select a UUID." + targetchar, Toast.LENGTH_SHORT).show();
+					Toast.makeText(Control.this, "Please select a UUID.", Toast.LENGTH_SHORT).show();
 
-					Log.d(DB, String.valueOf(targetchar));
 
 				}
 			}
@@ -192,13 +177,18 @@ public class Control extends Activity {
 	}
 
 
+
+
 	public static byte[] hexStringToByteArray(String s) {
+
 		int len = s.length();
 		byte[] data = new byte[len / 2];
 		for (int i = 0; i < len; i += 2) {
 			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
+			Log.d(TAG, "sent cmd:" + i + ": "  + (Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i+1), 16));
 		}
 		return data;
+
 	}
 
 		/* btn_write.setOnClickListener(new OnClickListener() {

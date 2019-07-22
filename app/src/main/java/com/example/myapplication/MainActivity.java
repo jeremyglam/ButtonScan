@@ -69,45 +69,6 @@ public class MainActivity extends Activity {
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
 		
-		 
-		
-//		search_device_view.setOnTouchListener(new OnTouchListener(){
-//
-//			@Override
-//			public boolean onTouch(View v, MotionEvent event) {
-//				// TODO Auto-generated method stub
-//
-//				if(search_device_view.getValidTouchEvent(event)){
-//					Log.d(null, "==== lawliet test onTouch======");
-//					if(event.getAction() == MotionEvent.ACTION_DOWN){
-//						if(search_device_view.isSearching()){
-//							if(mTimer != null){
-//								Log.d(null, "====cancel scan ====");
-//								mTimer.cancel();
-//							}
-//						}else{
-//							scanLeDevice();
-//							mTimer = new Timer();
-//							mTimer.schedule(new TimerTask() {
-//								@Override
-//								public void run() {
-//									Intent deviceListIntent = new Intent(getApplicationContext(),Device.class);
-//									startActivity(deviceListIntent);
-//									if(search_device_view.isSearching()){
-//										search_device_view.setSearching(false);
-//									}
-//								}
-//							}, SCAN_PERIOD);
-//						}
-//					}
-//				}
-//				return false;
-//			}
-//		});
-//
-		
-		
-		
 
 		Button btn = (Button)findViewById(R.id.but_scan);
 		btn.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +101,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void run() {
-				Intent deviceListIntent = new Intent(getApplicationContext(),
-						Device.class);
+				Intent deviceListIntent = new Intent(getApplicationContext(),Device.class);
 				startActivity(deviceListIntent);
 				//mDialog.dismiss();
 			}
