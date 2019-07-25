@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/but_scan"
+        android:id="@+id/but_connect"
         android:layout_width="119dp"
         android:layout_height="83dp"
         android:text="scan" />

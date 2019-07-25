@@ -58,7 +58,7 @@ public class Control extends Activity {
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
 
-	Button but_send1;
+	Button but_send1,but_connect,but_stop;
 	TextView tv_deviceName,tv_deviceAddr,tv_connstatus,tv_currentRSSI,tv_targetUUID,tv_rx;
 	EditText et_duration,et_white,et_yellow;
 	ExpandableListView lv;
@@ -120,10 +120,7 @@ public class Control extends Activity {
 					String cmd_yellow = et_yellow.getText().toString();
 
 
-
-
 					if (!cmd_duration.isEmpty() && !cmd_white.isEmpty() && !cmd_yellow.isEmpty()) {
-
 
 						int int_Duration = Integer.parseInt(et_duration.getText().toString());
 						String hex_Duration = Integer.toHexString(int_Duration);
@@ -150,16 +147,10 @@ public class Control extends Activity {
 						byte [] dataarray = hexStringToByteArray(hexarray);
 						Log.d(TAG, "after cmd data array " + Arrays.toString(dataarray));
 
-
-
 						target_character.setValue(dataarray);
-
-
 						mBluetoothLeService.writeCharacteristic(target_character);
-
 						Toast.makeText(Control.this, "S " + target_character, Toast.LENGTH_SHORT).show();
 						Log.d(DB, (cmd_duration));
-
 						Log.d(TAG, "sent cmd:" + "array sent data array "  + Arrays.toString(dataarray));
 					} else {
 						Toast.makeText(Control.this, "Please type your command. No empty fields allowed.", Toast.LENGTH_SHORT).show();
@@ -171,7 +162,22 @@ public class Control extends Activity {
 
 				}
 			}
+		});
 
+
+		but_stop = (Button) findViewById(R.id.but_stop);
+		but_stop.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mBluetoothLeService.disconnect();
+			}
+		});
+		but_connect = (Button) findViewById(R.id.but_connect);
+		but_connect.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mBluetoothLeService.connect(mDeviceAddress);
+			}
 		});
 
 	}
@@ -190,45 +196,6 @@ public class Control extends Activity {
 		return data;
 
 	}
-
-		/* btn_write.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if(target_character != null) {
-					String cmd = et_send.getText().toString();
-					Log.d(TAG, "send cmd:" + cmd);
-					if (cmd != null) {
-
-					//	byte[] value = new byte[1];
-					//	value[0] = (byte) (21 & 0xFF);
-					//	target_character.setValue(value);
-					//	mBluetoothLeService.writeCharacteristic(target_character);
-
-						try {
-							Log.i(TAG, "data " + URLEncoder.encode(, "utf-8"));
-
-							target_character.setValue(URLEncoder.encode(target_character, "utf-8"));
-
-							// TODO
-							mBluetoothLeService.writeCharacteristic(target_character);
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-						Toast.makeText(Control.this, "A" + target_character, Toast.LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(Control.this, "Please type your command.", Toast.LENGTH_SHORT).show();
-						Log.d(DB, String.valueOf(cmd));
-					}
-				}else{
-					Toast.makeText(Control.this, "Please select a UUID." + characteristicTXRX, Toast.LENGTH_SHORT).show();
-					et_send.setText((CharSequence) target_character);
-					Log.d(DB, String.valueOf(characteristicTXRX));
-
-				}
-				et_send.setText(null);
-			}
-
-		}); */
 
 
 

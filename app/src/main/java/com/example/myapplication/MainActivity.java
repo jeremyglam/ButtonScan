@@ -19,11 +19,8 @@ import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
@@ -31,11 +28,11 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	private BluetoothAdapter mBluetoothAdapter;
 	private static final int REQUEST_ENABLE_BT = 1;
-	private static final long SCAN_PERIOD = 8000;//8s
+	private static final long SCAN_PERIOD = 5000;//5s
 	private Dialog mDialog;
 	public static List<BluetoothDevice> mDevices = new ArrayList<BluetoothDevice>();
 	public static MainActivity instance = null;
-	//SearchDevicesView search_device_view;
+
 	Timer mTimer;
 	
 	@Override
@@ -43,8 +40,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main);
-		//search_device_view = (SearchDevicesView) findViewById(R.id.search_device_view);
-		//search_device_view.setWillNotDraw(false);
+
 		//mTimer = new Timer();
 		
 		if (!getPackageManager().hasSystemFeature(
@@ -64,13 +60,12 @@ public class MainActivity extends Activity {
 		}
 
 		if (!mBluetoothAdapter.isEnabled()) {
-			Intent enableBtIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			Intent enableBtIntent = new Intent(					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
 		
 
-		Button btn = (Button)findViewById(R.id.but_scan);
+		Button btn = (Button)findViewById(R.id.but_connect);
 		btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -91,21 +86,6 @@ public class MainActivity extends Activity {
 				}, SCAN_PERIOD);
 			}
 		});
-
-//		scanLeDevice();
-//
-//		showRoundProcessDialog(MainActivity.this, R.layout.loading_process_dialog_anim);
-
-		Timer mTimer = new Timer();
-		mTimer.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				Intent deviceListIntent = new Intent(getApplicationContext(),Device.class);
-				startActivity(deviceListIntent);
-				//mDialog.dismiss();
-			}
-		}, SCAN_PERIOD);
 
 		instance = this;
 	}
@@ -179,7 +159,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-
 		//System.exit(0);
 	}
 }

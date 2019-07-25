@@ -10,10 +10,6 @@
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,22 +18,25 @@
     <TextView
         android:id="@+id/tv_Name"
         android:layout_width="0dp"
-        android:layout_height="19dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="4dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="16dp"
         android:text="NAME"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tv_con"
+        app:layout_constraintBottom_toTopOf="@+id/tv_RSSI"
         app:layout_constraintEnd_toStartOf="@+id/tv_con"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_con"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="126dp"
         android:text="Connection"
-        app:layout_constraintEnd_toStartOf="@+id/but_scan"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_Name"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,12 +44,11 @@
         android:id="@+id/but_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="59dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="11dp"
         android:text="Stop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_RSSI"
-        app:layout_constraintTop_toBottomOf="@+id/but_scan" />
+        app:layout_constraintEnd_toEndOf="@+id/but_connect"
+        app:layout_constraintTop_toBottomOf="@+id/but_connect" />
 
     <TextView
         android:id="@+id/textView"
@@ -65,186 +63,170 @@
 
     <TextView
         android:id="@+id/TV_RX"
-        android:layout_width="315dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="285dp"
-        android:layout_marginBottom="286dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginBottom="14dp"
         android:text="REC:"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_UUID" />
+        app:layout_constraintTop_toBottomOf="@+id/but_send" />
 
     <TextView
         android:id="@+id/tv_MAC"
         android:layout_width="0dp"
-        android:layout_height="29dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="38dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="32dp"
         android:text="MAC:"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_UUID"
+        app:layout_constraintBottom_toTopOf="@+id/tv_BATTERY"
         app:layout_constraintEnd_toStartOf="@+id/tv_RSSI"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_Name" />
+        app:layout_constraintTop_toTopOf="@+id/but_connect" />
 
     <TextView
         android:id="@+id/tv_UUID"
         android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_height="41dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="99dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="99dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="85dp"
         android:text="UUID:"
-        app:layout_constraintBottom_toTopOf="@+id/ET_TX1"
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
         app:layout_constraintEnd_toStartOf="@+id/tv_BATTERY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/tv_Name" />
 
     <Button
-        android:id="@+id/but_scan"
+        android:id="@+id/but_connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="45dp"
-        android:text="Scan"
+        android:layout_marginTop="53dp"
+        android:layout_marginEnd="16dp"
+        android:text="Connect"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_con"
+        app:layout_constraintStart_toEndOf="@+id/tv_RSSI"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/ET_TX3"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="21dp"
+        android:layout_width="77dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="118dp"
+        android:layout_marginTop="157dp"
+        android:layout_marginEnd="119dp"
+        android:layout_marginBottom="158dp"
         android:ems="10"
-        android:inputType="text"
-        app:layout_constraintEnd_toStartOf="@+id/ET_TX4"
-        app:layout_constraintStart_toEndOf="@+id/ET_TX2"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="@+id/ET_TX4"
+        app:layout_constraintStart_toStartOf="@+id/TV_RX"
+        app:layout_constraintTop_toTopOf="@+id/tv_BATTERY" />
 
     <EditText
         android:id="@+id/ET_TX4"
-        android:layout_width="0dp"
+        android:layout_width="77dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
         android:ems="10"
-        android:inputType="text"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/ET_TX3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ET_TX3"
+        app:layout_constraintEnd_toEndOf="@+id/ELV1"
+        app:layout_constraintStart_toEndOf="@+id/textView7"
         app:layout_constraintTop_toTopOf="@+id/ET_TX3" />
 
     <EditText
         android:id="@+id/ET_TX1"
-        android:layout_width="0dp"
+        android:layout_width="77dp"
         android:layout_height="0dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginStart="29dp"
         android:ems="10"
-        android:inputType="text"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/ET_TX3"
-        app:layout_constraintEnd_toStartOf="@+id/ET_TX2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ET_TX2" />
-
-    <EditText
-        android:id="@+id/ET_TX2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="14dp"
-        android:ems="10"
-        android:inputType="numberDecimal"
-        android:text="@string/_00"
-        app:layout_constraintBaseline_toBaselineOf="@+id/ET_TX3"
-        app:layout_constraintEnd_toStartOf="@+id/ET_TX3"
-        app:layout_constraintStart_toEndOf="@+id/ET_TX1" />
+        app:layout_constraintTop_toTopOf="@+id/ET_TX3" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="9dp"
+        android:layout_marginBottom="21dp"
         android:text="Duration"
         app:layout_constraintBottom_toTopOf="@+id/ET_TX1"
         app:layout_constraintEnd_toEndOf="@+id/ET_TX1" />
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="9dp"
-        android:text="X"
-        app:layout_constraintBottom_toTopOf="@+id/ET_TX2"
-        app:layout_constraintStart_toStartOf="@+id/ET_TX2" />
-
-    <TextView
         android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="9dp"
+        android:layout_width="71dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="49dp"
+        android:layout_marginEnd="49dp"
         android:text="White LED"
-        app:layout_constraintBottom_toTopOf="@+id/ET_TX3"
-        app:layout_constraintEnd_toEndOf="@+id/ET_TX3" />
+        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+        app:layout_constraintEnd_toEndOf="@+id/tv_BATTERY"
+        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_width="0dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="164dp"
+        android:layout_marginBottom="164dp"
         android:text="Yellow LED"
+        app:layout_constraintBottom_toTopOf="@+id/TV_RX"
         app:layout_constraintEnd_toEndOf="@+id/ET_TX4"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/ET_TX4"
+        app:layout_constraintTop_toBottomOf="@+id/tv_con" />
 
     <Button
         android:id="@+id/but_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="29dp"
-        android:layout_marginBottom="19dp"
+        android:layout_marginStart="5dp"
         android:text="send"
-        app:layout_constraintBottom_toTopOf="@+id/TV_RX"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/TV_RX"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_BATTERY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="148dp"
+        android:layout_marginStart="20dp"
         android:text="BATTERY:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_UUID"
-        app:layout_constraintTop_toTopOf="@+id/tv_UUID" />
+        app:layout_constraintBottom_toBottomOf="@+id/but_connect"
+        app:layout_constraintStart_toEndOf="@+id/tv_MAC"
+        app:layout_constraintTop_toBottomOf="@+id/but_connect" />
 
     <TextView
         android:id="@+id/tv_RSSI"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="42dp"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="14dp"
         android:text="RSSI:"
-        app:layout_constraintEnd_toStartOf="@+id/but_stop"
-        app:layout_constraintStart_toEndOf="@+id/tv_MAC"
-        app:layout_constraintTop_toTopOf="@+id/tv_MAC" />
+        app:layout_constraintBottom_toTopOf="@+id/tv_BATTERY"
+        app:layout_constraintEnd_toStartOf="@+id/but_connect"
+        app:layout_constraintStart_toEndOf="@+id/tv_MAC" />
 
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="64dp"
         android:text="Characteristics UUID List:"
         android:textSize="10pt"
-        app:layout_constraintStart_toStartOf="@+id/ELV1"
-        app:layout_constraintTop_toBottomOf="@+id/TV_RX" />
+        app:layout_constraintStart_toStartOf="@+id/TV_RX"
+        app:layout_constraintTop_toBottomOf="@+id/but_send" />
 
 
     <ExpandableListView
@@ -252,8 +234,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="6dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="21dp"
         android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
         android:background="#cacaca"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
