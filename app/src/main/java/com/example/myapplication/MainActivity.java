@@ -71,9 +71,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				scanLeDevice();
-
 				showRoundProcessDialog(MainActivity.this, R.layout.loading_process_dialog_anim);
-
 				Timer mTimer = new Timer();
 				mTimer.schedule(new TimerTask() {
 					@Override
@@ -86,7 +84,6 @@ public class MainActivity extends Activity {
 				}, SCAN_PERIOD);
 			}
 		});
-
 		instance = this;
 	}
 
@@ -106,7 +103,6 @@ public class MainActivity extends Activity {
 		mDialog = new AlertDialog.Builder(mContext).create();
 		mDialog.setOnKeyListener(keyListener);
 		mDialog.show();
-
 		mDialog.setContentView(layout);
 	}
 
@@ -116,13 +112,11 @@ public class MainActivity extends Activity {
 			@Override
 			public void run() {
 				mBluetoothAdapter.startLeScan(mLeScanCallback);
-
 				try {
 					Thread.sleep(SCAN_PERIOD);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-
 				mBluetoothAdapter.stopLeScan(mLeScanCallback);
 			}
 		}.start();

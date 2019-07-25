@@ -1,17 +1,10 @@
 package com.example.myapplication;
 
-import java.io.OptionalDataException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
-
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
@@ -25,11 +18,9 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.util.Xml;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -57,21 +48,16 @@ public class Control extends Activity {
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
-
 	Button but_send1,but_connect,but_stop;
 	TextView tv_deviceName,tv_deviceAddr,tv_connstatus,tv_currentRSSI,tv_targetUUID,tv_rx;
 	EditText et_duration,et_white,et_yellow;
 	ExpandableListView lv;
-
-	String hex_Whitevalue;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-
 		tv_deviceName = (TextView) findViewById(R.id.tv_Name);
 		tv_deviceAddr = (TextView) findViewById(R.id.tv_MAC);
 		tv_connstatus = (TextView) findViewById(R.id.tv_con);
@@ -97,10 +83,7 @@ public class Control extends Activity {
 		tv_deviceName.setText(mDeviceName);
 		tv_deviceAddr.setText(mDeviceAddress);
 		tv_targetUUID.setText(mDeviceUuid);
-		//getActionBar().setTitle(mDeviceName);
-		//getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// getActionBar().setTitle(mTitle +menutitles[0]);
 		Log.d(TAG, "start BluetoothLE Service");
 		
 		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
@@ -243,15 +226,18 @@ public class Control extends Activity {
             } else if(BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(mConnected);
+
 			} else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
 				Log.d(TAG, "services discovered!!!");
 				//getGattService(mBluetoothLeService.getSupportedGattServices());
 				displayGattServices(mBluetoothLeService.getSupportedGattServices());
 				startReadRssi();
 				//startReadInformation();
+
 			} else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 				Log.d(TAG, "receive data");
                 byte[] value = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA);
+
                 if(value != null){
                 	displayData(value);
                 }else{
