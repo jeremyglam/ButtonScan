@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -34,7 +35,6 @@ public class Control extends Activity {
 	private final static String UUID_KEY_DATA = "0000F001-0000-1000-8000-00805F9B34FB";
 	public static final String EXTRAS_DEVICE = "EXTRAS_DEVICE";
     private String mDeviceName = null;
-    public String s;
     private String mDeviceAddress = null;
 //	private String mDeviceUuid = "0000F001-0000-1000-8000-00805F9B34FB";
 	private String mDeviceUuid = null;
@@ -49,7 +49,7 @@ public class Control extends Activity {
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
 	Button but_send1,but_connect,but_stop;
-	TextView tv_deviceName,tv_deviceAddr,tv_connstatus,tv_currentRSSI,tv_targetUUID,tv_rx;
+	TextView tv_deviceName,tv_deviceAddr,tv_connstatus,tv_currentRSSI,tv_targetUUID,tv_rx,tv_battery;
 	EditText et_duration,et_white,et_yellow;
 	ExpandableListView lv;
 
@@ -65,7 +65,7 @@ public class Control extends Activity {
 		tv_currentRSSI.setText("null");
 		tv_targetUUID = (TextView) findViewById(R.id.tv_UUID);
 		tv_targetUUID.setText("null");
-		tv_rx = (TextView) findViewById(R.id.TV_RX);
+//		tv_rx = (TextView) findViewById(R.id.TV_RX);
 		et_duration = (EditText) findViewById(R.id.ET_TX1);
 		et_white = (EditText) findViewById(R.id.ET_TX3);
 		et_yellow = (EditText) findViewById(R.id.ET_TX4);
@@ -83,11 +83,17 @@ public class Control extends Activity {
 		tv_deviceName.setText(mDeviceName);
 		tv_deviceAddr.setText(mDeviceAddress);
 		tv_targetUUID.setText(mDeviceUuid);
-
+		et_duration.setText("3");
+		et_yellow.setText("150");
+		et_white.setText("150");
 		Log.d(TAG, "start BluetoothLE Service");
 		
 		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
 		bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+		//battery indicator
+		tv_battery = (TextView) this.findViewById(R.id.tv_BATTERY);
+		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
 		but_send1 = (Button) findViewById(R.id.but_send);
@@ -137,7 +143,7 @@ public class Control extends Activity {
 						Log.d(TAG, "sent cmd:" + "array sent data array "  + Arrays.toString(dataarray));
 					} else {
 						Toast.makeText(Control.this, "Please type your command. No empty fields allowed.", Toast.LENGTH_SHORT).show();
-						Log.d(DB, String.valueOf(cmd_duration));
+						Log.d(DB, (cmd_duration));
 					}
 				}else{
 					Toast.makeText(Control.this, "Please select a UUID.", Toast.LENGTH_SHORT).show();
@@ -166,7 +172,13 @@ public class Control extends Activity {
 	}
 
 
-
+	private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+		@Override
+		public void onReceive(Context ctxt, Intent intent) {
+			int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+			tv_battery.setText("Battery: "+String.valueOf(level) + "%");
+		}
+	};
 
 	public static byte[] hexStringToByteArray(String s) {
 
@@ -276,6 +288,7 @@ public class Control extends Activity {
 				while (true) {
 					try {
 						mBluetoothLeService.readRssi();
+
 						sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -284,42 +297,32 @@ public class Control extends Activity {
 			};
 		}.start();
 	}
-	
-	
-    private void onCharacteristicsRead(String uuidStr, byte[] value) {
-        Log.i(TAG, "onCharacteristicsRead: " + uuidStr);
-        if (value != null && value.length > 0) {
-            final StringBuilder stringBuilder = new StringBuilder(value.length);
-            for (byte byteChar : value) {
-                stringBuilder.append(String.format("%02X ", byteChar));
-            }
-            displayData(stringBuilder.toString());
-        }
-    }
-	
-	private void displayData(String data) {
+
+
+	private void displayData(byte[] data) {
 		if (data != null) {
-			tv_rx.setText(data);
+			String dataArray = new String(data);
+			Log.d(TAG, "data = " + dataArray);
+			tv_rx.setText(dataArray);
 		}
+
 	}
-		
 	@Override
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			mBluetoothLeService.disconnect();
-			mBluetoothLeService.close();
-
-			System.exit(0);
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		if (item.getItemId() == android.R.id.home) {
+//			mBluetoothLeService.disconnect();
+//			mBluetoothLeService.close();
+//			System.exit(0);
+//		}
+//
+//		return super.onOptionsItemSelected(item);
+//	}
 
 	@Override
 	protected void onStop() {
@@ -338,14 +341,7 @@ public class Control extends Activity {
 		System.exit(0);
 	}
 
-	private void displayData(byte[] data) {
-		if (data != null) {
-			String dataArray = new String(data);
-			Log.d(TAG, "data = " + dataArray);
-			tv_rx.setText(dataArray);
-		}
-		
-	}
+
 		
 	private static IntentFilter makeGattUpdateIntentFilter() {
 		final IntentFilter intentFilter = new IntentFilter();
