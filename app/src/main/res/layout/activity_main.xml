@@ -8,11 +8,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="0dp"
+        android:layout_width="395dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_con"
+        app:layout_constraintStart_toStartOf="@+id/tv_con"
         app:layout_constraintTop_toTopOf="parent"></androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23dp"
-        android:layout_marginEnd="126dp"
+        android:layout_marginEnd="125dp"
         android:text="Connection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_Name"
@@ -62,20 +62,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/TV_RX"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="27dp"
-        android:layout_marginBottom="14dp"
-        android:text="REC:"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/but_send" />
-
-    <TextView
         android:id="@+id/tv_MAC"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -93,7 +79,7 @@
         android:layout_height="41dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="85dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="13dp"
         android:layout_marginBottom="85dp"
         android:text="UUID:"
         app:layout_constraintBottom_toBottomOf="@+id/textView4"
@@ -116,7 +102,7 @@
         android:id="@+id/ET_TX3"
         android:layout_width="77dp"
         android:layout_height="40dp"
-        android:layout_marginStart="118dp"
+        android:layout_marginStart="116dp"
         android:layout_marginTop="157dp"
         android:layout_marginEnd="119dp"
         android:layout_marginBottom="158dp"
@@ -124,14 +110,14 @@
         android:inputType="number"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="@+id/ET_TX4"
-        app:layout_constraintStart_toStartOf="@+id/TV_RX"
+        app:layout_constraintStart_toStartOf="@+id/ET_TX1"
         app:layout_constraintTop_toTopOf="@+id/tv_BATTERY" />
 
     <EditText
         android:id="@+id/ET_TX4"
         android:layout_width="77dp"
         android:layout_height="0dp"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="47dp"
         android:layout_marginEnd="48dp"
         android:ems="10"
         android:inputType="number"
@@ -165,7 +151,7 @@
         android:id="@+id/textView7"
         android:layout_width="71dp"
         android:layout_height="0dp"
-        android:layout_marginStart="49dp"
+        android:layout_marginStart="50dp"
         android:layout_marginEnd="49dp"
         android:text="White LED"
         app:layout_constraintBottom_toBottomOf="@+id/textView8"
@@ -177,29 +163,29 @@
         android:id="@+id/textView8"
         android:layout_width="0dp"
         android:layout_height="21dp"
-        android:layout_marginTop="164dp"
-        android:layout_marginBottom="164dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="61dp"
         android:text="Yellow LED"
-        app:layout_constraintBottom_toTopOf="@+id/TV_RX"
+        app:layout_constraintBottom_toBottomOf="@+id/ET_TX4"
         app:layout_constraintEnd_toEndOf="@+id/ET_TX4"
         app:layout_constraintStart_toStartOf="@+id/ET_TX4"
-        app:layout_constraintTop_toBottomOf="@+id/tv_con" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_UUID" />
 
     <Button
         android:id="@+id/but_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="32dp"
         android:text="send"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/TV_RX"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_BATTERY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="21dp"
         android:text="BATTERY:"
         app:layout_constraintBottom_toBottomOf="@+id/but_connect"
         app:layout_constraintStart_toEndOf="@+id/tv_MAC"
@@ -221,11 +207,13 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="52dp"
         android:layout_marginTop="64dp"
+        android:layout_marginEnd="52dp"
         android:text="Characteristics UUID List:"
         android:textSize="10pt"
-        app:layout_constraintStart_toStartOf="@+id/TV_RX"
+        app:layout_constraintEnd_toEndOf="@+id/but_stop"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/but_send" />
 
 
