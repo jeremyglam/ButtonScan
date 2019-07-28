@@ -31,7 +31,9 @@ public class BluetoothLeService extends Service{
     private BluetoothGatt mBluetoothGatt;
     private String mBluetoothDeviceAddress;
     private int mConnectionState = STATE_DISCONNECTED;
-	
+    public static BluetoothGattCharacteristic target_character = null;
+ //   public static BluetoothGattCharacteristic target_character2;
+  //  public BluetoothGattCharacteristic target_character3;
 	//private final int REQUEST_ENABLE_BT = 1;
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
@@ -56,7 +58,7 @@ public class BluetoothLeService extends Service{
 			.fromString(SampleGattAttributes.BLE_RX);
 	public final static UUID UUID_BLE_SERVICE = UUID
 			.fromString(SampleGattAttributes.BLE_SERVICE);
-    
+
 
 
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback(){
@@ -71,8 +73,7 @@ public class BluetoothLeService extends Service{
                 // Attempts to discover services after successful connection.
                 Log.i(TAG, "Attempting to start service discovery:" +
                         mBluetoothGatt.discoverServices());
-
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 intentAction = ACTION_GATT_DISCONNECTED;
                 mConnectionState = STATE_DISCONNECTED;
                 Log.i(TAG, "Disconnected from GATT server.");
@@ -88,11 +89,26 @@ public class BluetoothLeService extends Service{
 				Log.w(TAG, "onReadRemoteRssi received: " + status);
 			}
 		};
-    	
+
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
+                if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
+                    Log.w(TAG, "onServicesDiscovered received: " + status);
+
+
+                    Log.w(TAG, "cmd onservicesdiscovered start. target char: "+target_character);
+                    BluetoothGattCharacteristic characteristic = gatt.getService(UUID.fromString("0000f000-0000-1000-8000-00805f9b34fb")).getCharacteristic(UUID.fromString("0000f001-0000-1000-8000-00805f9b34fb"));
+
+                    final BluetoothGattCharacteristic target_characteristic = characteristic;
+                    target_character = target_characteristic;
+/*                    Intent intent = new Intent(getBaseContext(),Control.class);
+                    intent.putExtra("uuid",target_character);*/
+                    Log.w(TAG, "cmd onservicesdiscovered after. target charrr: "+target_character);
+
+
+
+
             } else {
                 Log.w(TAG, "onServicesDiscovered received: " + status);
             }

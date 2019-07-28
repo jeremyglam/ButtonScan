@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 //import com.example.seeedstudio.BLE.R;
 import android.app.Activity;
@@ -61,7 +62,8 @@ public class Device extends Activity implements OnItemClickListener {
 			map = new HashMap<String, String>();
 			map.put(DEVICE_NAME, device.getName());
 			map.put(DEVICE_ADDRESS, device.getAddress());
-			map.put(DEVICE_UUID, String.valueOf(device.getUuids()));
+//			map.put(DEVICE_UUID, String.valueOf(device.getUuids()));
+			map.put(DEVICE_UUID, "0000f001-0000-1000-8000-00805f9b34fb");
 			listItems.add(map);
 		}
 
@@ -79,12 +81,12 @@ public class Device extends Activity implements OnItemClickListener {
 				.get(position);
 		String addr = hashMap.get(DEVICE_ADDRESS);
 		String name = hashMap.get(DEVICE_NAME);
-		String UUID = hashMap.get(DEVICE_UUID);
+		String uuid = hashMap.get(DEVICE_UUID);
 
 		Intent intent = new Intent(Device.this, Control.class);
 		intent.putExtra(EXTRA_DEVICE_ADDRESS, addr);
 		intent.putExtra(EXTRA_DEVICE_NAME, name);
-		intent.putExtra(EXTRA_DEVICE_UUID,UUID);
+		intent.putExtra(EXTRA_DEVICE_UUID,uuid);
 		startActivity(intent);
 		MainActivity.instance.finish();
 		//finish();

@@ -13,20 +13,22 @@ public class SampleGattAttributes {
 	
     public static String CLIENT_CHARACTERISTIC_CONFIG = "0000F001-0000-1000-8000-00805F9B34FB";
     public static String HM_10_CONF = "0000F001-0000-1000-8000-00805F9B34FB";
-	public static String BLE_TX = "0000F001-0000-1000-8000-00805F9B34FB";
-	public static String BLE_RX = "0000F002-0000-1000-8000-00805F9B34FB";
-	public static String BLE_SERVICE = "0000F001-0000-1000-8000-00805F9B34FB";
+	public static String BLE_TX = "0000f002-0000-1000-8000-00805f9b34fb";
+	public static String BLE_RX = "0000f001-0000-1000-8000-00805f9b34fb";
+	public static String BLE_SERVICE = "0000f000-0000-1000-8000-00805f9b34fb";
     static {
         // Sample Services.
     	attributes.put("0000fff0-0000-1000-8000-00805f9b34fb", "�����Զ���ͨ��Э�����������");
     	attributes.put("00001800-0000-1000-8000-00805f9b34fb", "Generic Access Profile Service");
     	attributes.put("00001801-0000-1000-8000-00805f9b34fb", "Generic Attribute Profile Service");
-    	
+        attributes.put("0000f000-0000-1000-8000-00805f9b34fb", "This service");
         attributes.put("0000180d-0000-1000-8000-00805f9b34fb", "Heart Rate Service");
         attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
         // Sample Characteristics.
         attributes.put("0000ffe1-0000-1000-8000-00805f9b34fb", "Heart Rate Measurement");
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
+        attributes.put("0000f001-0000-1000-8000-00805f9b34fb", "Write");
+        attributes.put("0000f002-0000-1000-8000-00805f9b34fb", "Read");
         attributes.put("0000fff1-0000-1000-8000-00805f9b34fb", "��һ����ֵ");
         attributes.put("0000fff2-0000-1000-8000-00805f9b34fb", "�ڶ�����ֵ");
         attributes.put("0000fff3-0000-1000-8000-00805f9b34fb", "��������ֵ");

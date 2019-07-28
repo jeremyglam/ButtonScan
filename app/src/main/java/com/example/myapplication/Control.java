@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import android.app.Activity;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -32,8 +34,8 @@ import android.widget.Toast;
 public class Control extends Activity {
 	private final static String TAG = Control.class.getSimpleName();
 	private static final String DB = "debug";
-	private final static String UUID_KEY_DATA = "0000F001-0000-1000-8000-00805F9B34FB";
-	public static final String EXTRAS_DEVICE = "EXTRAS_DEVICE";
+//	private final static String UUID_KEY_DATA = "0000F001-0000-1000-8000-00805F9B34FB";
+//	public static final String EXTRAS_DEVICE = "EXTRAS_DEVICE";
     private String mDeviceName = null;
     private String mDeviceAddress = null;
 //	private String mDeviceUuid = "0000F001-0000-1000-8000-00805F9B34FB";
@@ -43,8 +45,13 @@ public class Control extends Activity {
     private boolean mConnected = false;
     private String rssi_value;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
+    public BluetoothGatt gatt=null;
 	private BluetoothLeService mBluetoothLeService = null;
-	private BluetoothGattCharacteristic target_character = null;
+	private BluetoothGattCharacteristic target_character;
+    private BluetoothGattCharacteristic target_characterz;
+
+
+
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
@@ -91,6 +98,11 @@ public class Control extends Activity {
 		Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
 		bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
+/*		BluetoothGattCharacteristic characteristic = getIntent().getExtras("uuid");
+		target_character2 = characteristic;*/
+
+/*		Log.w(TAG, "cmd onservicesdiscovered startingggg. target char: "+target_character);
+		Log.w(TAG, "cmd onservicesdiscovered startingggg. target char: "+mBluetoothLeService.target_character);*/
 		//battery indicator
 		tv_battery = (TextView) this.findViewById(R.id.tv_BATTERY);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -145,11 +157,12 @@ public class Control extends Activity {
 						Toast.makeText(Control.this, "Please type your command. No empty fields allowed.", Toast.LENGTH_SHORT).show();
 						Log.d(DB, (cmd_duration));
 					}
-				}else{
+				}
+/*				else{
 					Toast.makeText(Control.this, "Please select a UUID.", Toast.LENGTH_SHORT).show();
 
 
-				}
+				}*/
 			}
 		});
 
@@ -193,7 +206,7 @@ public class Control extends Activity {
 	}
 
 
-
+	// Code to manage Service lifecycle.
 	private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
 		@Override
@@ -202,16 +215,20 @@ public class Control extends Activity {
 				IBinder service) {
 			Log.d(TAG, "start service Connection");
 			mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+			Log.w(TAG, "cmd onservicesdiscovered startinggggonserviceconnected. target char: "+target_character);
 			if (!mBluetoothLeService.initialize()) {
 				Log.e(TAG, "Unable to initialize Bluetooth");
 				finish();
 			}
 			// Automatically connects to the device upon successful start-up
 			// initialization.
+			mBluetoothLeService.connect(mDeviceAddress);
 			Log.d(TAG, "mDeviceAddress = " + mDeviceAddress);
 			boolean status = mBluetoothLeService.connect(mDeviceAddress);
 			if(status == true){
 				Log.d(TAG, "connection OK");
+
+
 			}else{
 				Log.d(TAG, "Connection failed");
 			}
@@ -224,6 +241,12 @@ public class Control extends Activity {
 		}
 	};
 
+	// Handles various events fired by the Service.
+	// ACTION_GATT_CONNECTED: connected to a GATT server.
+	// ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
+	// ACTION_GATT_SERVICES_DISCOVERED: discovered GATT services.
+	// ACTION_DATA_AVAILABLE: received data from the device.  This can be a result of read
+	//                        or notification operations.
 	private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -268,7 +291,6 @@ public class Control extends Activity {
 			// TODO Auto-generated method stub
 			if(value != null){
 				tv_currentRSSI.setText(value);
-
 			}
 		}
 
@@ -299,20 +321,6 @@ public class Control extends Activity {
 		}.start();
 	}
 
-	protected static double calculateAccuracy(int txPower, double rssi) {
-		if (rssi == 0) {
-			return -1.0; // if we cannot determine accuracy, return -1.
-		}
-
-		double ratio = rssi*1.0/txPower;
-		if (ratio < 1.0) {
-			return Math.pow(ratio,10);
-		}
-		else {
-			double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
-			return accuracy;
-		}
-	}
 
 	private void displayData(byte[] data) {
 		if (data != null) {
@@ -357,7 +365,16 @@ public class Control extends Activity {
 	}
 
 
-		
+/*
+	public void onServicesDiscovered(BluetoothGatt gatt) {
+
+		Log.w(TAG, "cmd onservicesdiscovered start. target char: "+target_character);
+		BluetoothGattCharacteristic characteristic = gatt.getService(UUID.fromString("0000F001-0000-1000-8000-00805F9B34FB")).getCharacteristic(UUID.fromString("0000F001-0000-1000-8000-00805F9B34FB"));
+		target_character = characteristic;
+		Log.w(TAG, "cmd onservicesdiscovered start. target char: "+target_character);
+	}
+*/
+
 	private static IntentFilter makeGattUpdateIntentFilter() {
 		final IntentFilter intentFilter = new IntentFilter();
 
@@ -368,7 +385,11 @@ public class Control extends Activity {
 		intentFilter.addAction(BluetoothLeService.ACTION_GATT_RSSI);
 		return intentFilter;
 	}
-	
+
+
+	// Demonstrates how to iterate through the supported GATT Services/Characteristics.
+	// In this sample, we populate the data structure that is bound to the ExpandableListView
+	// on the UI.
 	 private void displayGattServices(List<BluetoothGattService> gattServices) {
 		 
 		 if (gattServices == null) return;
@@ -380,6 +401,7 @@ public class Control extends Activity {
 		 
 		 ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
                 = new ArrayList<ArrayList<HashMap<String, String>>>();
+        
 		 mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
         
 		 // Loops through available GATT Services.
@@ -443,7 +465,43 @@ public class Control extends Activity {
 				 new int[] { android.R.id.text1, android.R.id.text2 }
 		);
         lv.setAdapter(gattServiceAdapter);
+		 Log.w(TAG, "cmd onservicesdiscovered startinggggafterservicesenum. target char: "+target_character);
+//		 Log.w(TAG, "cmd onservicesdiscovered startinggggafterservicesenum2. target char: "+mBluetoothLeService.target_character3);
+//		 Log.w(TAG, "cmd onservicesdiscovered startinggggafterservicesenum3. target char: "+BluetoothLeService.target_character2);
+//		 final BluetoothGattCharacteristic characteristic = BluetoothLeService.target_character2;
+		 target_character = mBluetoothLeService.target_character;
+		 Log.w(TAG, "cmd onservicesdiscovered startinggggafterservicesenum4. target char: "+target_character);
+		 tv_targetUUID.setText(target_character.getUuid().toString());
+
+/*		 final BluetoothGattCharacteristic characteristic = mBluetoothLeService.readCharacteristic();
+
+		 target_character = characteristic;
+
+		 tv_targetUUID.setText(characteristic.getUuid().toString());*/
+/*
+
+		 try
+		 {
+			 Thread.sleep(1000);
+		 }
+		 catch(InterruptedException ex)
+		 {
+			 Thread.currentThread().interrupt();
+		 }
+
+		 Log.w(TAG, "cmd onservicesdiscovered start. target char: "+target_character);
+		 BluetoothGattCharacteristic characteristic = gatt.getService(UUID.fromString("0000f000-0000-1000-8000-00805f9b34fb")).getCharacteristic(UUID.fromString("0000f001-0000-1000-8000-00805f9b34fb"));
+		 target_character = characteristic;
+		 Log.w(TAG, "cmd onservicesdiscovered start. target char: "+target_character);
+*/
+
+
 	 }
+
+	// If a given GATT characteristic is selected, check for supported features.  This sample
+	// demonstrates 'Read' and 'Notify' features.  See
+	// http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
+	// list of supported characteristic features.
 
 	 private final ExpandableListView.OnChildClickListener servicesListClickListner =
 		new ExpandableListView.OnChildClickListener() {
@@ -453,7 +511,7 @@ public class Control extends Activity {
                 if (mGattCharacteristics != null) {
                     final BluetoothGattCharacteristic characteristic =
                             mGattCharacteristics.get(groupPosition).get(childPosition);
-                    
+
                     target_character = characteristic;
 
                     tv_targetUUID.setText(characteristic.getUuid().toString());
